@@ -2,7 +2,7 @@
   "name": "akademi-plan-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Tyler Rose",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -75,5 +75,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node --esm prisma/seed.ts"
   }
 }
