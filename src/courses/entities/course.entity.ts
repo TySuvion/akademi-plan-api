@@ -5,4 +5,10 @@ export class CourseEntity implements Course {
   id: number;
   @ApiProperty()
   name: string;
+  @ApiProperty({ required: false, nullable: true })
+  userID: number | null;
+  @ApiProperty()
+  createdAt: Date;
+  @ApiProperty()
+  updatedAt: Date;
 }
