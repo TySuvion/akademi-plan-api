@@ -22,14 +22,15 @@ export class CoursesController {
 
   @Post()
   @ApiCreatedResponse({ type: CourseEntity })
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.coursesService.create(createCourseDto);
+  async create(@Body() createCourseDto: CreateCourseDto) {
+    return new CourseEntity(await this.coursesService.create(createCourseDto));
   }
 
   @Get()
   @ApiOkResponse({ type: CourseEntity, isArray: true })
-  findAll() {
-    return this.coursesService.findAll();
+  async findAll() {
+    const courses = await this.coursesService.findAll();
+    return courses.map((course) => new CourseEntity(course));
   }
 
   @Get(':id')
@@ -39,21 +40,23 @@ export class CoursesController {
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
-    return course;
+    return new CourseEntity(course);
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: CourseEntity })
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCourseDto: UpdateCourseDto,
   ) {
-    return this.coursesService.update(id, updateCourseDto);
+    return new CourseEntity(
+      await this.coursesService.update(id, updateCourseDto),
+    );
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: CourseEntity })
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.coursesService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return new CourseEntity(await this.coursesService.remove(id));
   }
 }

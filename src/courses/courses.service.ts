@@ -20,6 +20,9 @@ export class CoursesService {
   findOne(id: number) {
     return this.prisma.course.findUnique({
       where: { id },
+      include: {
+        user: true,
+      },
     });
   }
 
