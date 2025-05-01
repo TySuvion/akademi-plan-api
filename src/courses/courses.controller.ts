@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -33,8 +34,12 @@ export class CoursesController {
 
   @Get(':id')
   @ApiOkResponse({ type: CourseEntity })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.coursesService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const course = await this.coursesService.findOne(id);
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+    return course;
   }
 
   @Patch(':id')
