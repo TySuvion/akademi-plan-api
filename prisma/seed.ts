@@ -4,47 +4,44 @@ const prisma = new PrismaClient();
 
 async function main() {
   // create two dummy users
-  const user1 = await prisma.user.create({
-    data: {
+  const user1 = await prisma.user.upsert({
+    where: {
+      username: 'TestUser1',
+    },
+    update: {
+      password: 'TestPassword1',
+    },
+    create: {
       username: 'TestUser1',
       password: 'TestPassword1',
     },
   });
 
-  const user2 = await prisma.user.create({
-    data: {
+  const user2 = await prisma.user.upsert({
+    where: {
+      username: 'TestUser2',
+    },
+    update: {
+      password: 'TestPassword2',
+    },
+    create: {
       username: 'TestUser2',
       password: 'TestPassword2',
     },
   });
 
-  // create two dummy courses
-  const course1 = await prisma.course.update({
+  const user3 = await prisma.user.upsert({
     where: {
-      id: 1,
+      username: 'TylerRose',
     },
-    data: {
-      userID: user1.id,
+    update: {
+      password: 'Test3358',
     },
-  });
-
-  const course2 = await prisma.course.update({
-    where: {
-      id: 2,
-    },
-    data: {
-      userID: user2.id,
+    create: {
+      username: 'TylerRose',
+      password: 'Test3358',
     },
   });
-
-  const course3 = await prisma.course.create({
-    data: {
-      name: 'Grundlagen der Informatik',
-      userID: user1.id,
-    },
-  });
-
-  console.log(`Created courses: ${course1.name}, ${course2.name}`);
 }
 
 //execute main
