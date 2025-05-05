@@ -9,12 +9,23 @@ export class CoursesService {
 
   create(createCourseDto: CreateCourseDto) {
     return this.prisma.course.create({
-      data: createCourseDto,
+      data: {
+        name: createCourseDto.name,
+        user: {
+          connect: { id: createCourseDto.userId },
+        },
+      },
     });
   }
 
   findAll() {
     return this.prisma.course.findMany();
+  }
+
+  findByUser(userId: number) {
+    return this.prisma.course.findMany({
+      where: { userID: userId },
+    });
   }
 
   findOne(id: number) {

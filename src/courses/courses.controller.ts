@@ -43,6 +43,16 @@ export class CoursesController {
     return new CourseEntity(course);
   }
 
+  @Get('user/:id')
+  @ApiOkResponse({ type: CourseEntity, isArray: true })
+  async findByUser(@Param('id', ParseIntPipe) id: number) {
+    const courses = await this.coursesService.findByUser(id);
+    if (!courses) {
+      throw new NotFoundException(`Courses for user with ID ${id} not found`);
+    }
+    return courses.map((course) => new CourseEntity(course));
+  }
+
   @Patch(':id')
   @ApiOkResponse({ type: CourseEntity })
   async update(
