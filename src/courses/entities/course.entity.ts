@@ -7,13 +7,13 @@ export class CourseEntity implements Course {
   @ApiProperty()
   name: string;
   @ApiProperty({ required: false, nullable: true })
-  userID: number | null;
+  userID: number;
   @ApiProperty()
   createdAt: Date;
   @ApiProperty()
   updatedAt: Date | null;
-  @ApiProperty({ required: false, type: UserEntity })
-  user?: UserEntity | null;
+  @ApiProperty({ type: UserEntity })
+  user: UserEntity;
 
   constructor({ user, ...data }: Partial<CourseEntity>) {
     Object.assign(this, data);
