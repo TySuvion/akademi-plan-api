@@ -1,4 +1,11 @@
-import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateEventDto {
   @IsString()
@@ -6,13 +13,14 @@ export class CreateEventDto {
   name: string;
 
   @IsString()
+  @IsOptional()
   description: string | null;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   start: Date;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   end: Date;
 
@@ -21,5 +29,6 @@ export class CreateEventDto {
   userId: number;
 
   @IsInt()
+  @IsOptional()
   courseId: number | null;
 }
