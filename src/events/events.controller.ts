@@ -41,6 +41,18 @@ export class EventsController {
     return Events.map((Event) => new EventEntity(Event));
   }
 
+  @Get('user/:id/forDate')
+  @ApiOkResponse({ type: EventEntity, isArray: true })
+  async findEventsForDateByUser(
+    @Param('id', ParseIntPipe) userID: number,
+    @Body() date: Date,
+  ) {
+    const Events = await this.eventsService.findAll({
+      userId: userID,
+      start: date,
+    });
+  }
+
   @Get(':id')
   @ApiOkResponse({ type: EventEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {
