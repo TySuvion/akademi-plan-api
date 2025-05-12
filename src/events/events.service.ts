@@ -33,6 +33,18 @@ export class EventsService {
     });
   }
 
+  async findEventsForDateByUser(userID: number, date: string) {
+    return this.prisma.event.findMany({
+      where: {
+        userId: userID,
+        start: {
+          gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
+          lt: new Date(new Date(date).setHours(23, 59, 59, 999)),
+        },
+      },
+    });
+  }
+
   findByUser(userId: number) {
     return this.prisma.event.findMany({
       where: { userId },
