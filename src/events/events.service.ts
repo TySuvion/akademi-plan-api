@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { EventType, Prisma } from '@prisma/client';
 import { CreateStudyBlockDto } from './dto/create-studyblock.dto';
 import { updateStudyBlockDto } from './dto/update-studyblock.dto';
 
@@ -91,7 +91,7 @@ export class EventsService {
         description: createStudyBlockDto.description,
         start: createStudyBlockDto.start,
         end: createStudyBlockDto.end,
-        type: 'STUDY_BLOCK',
+        type: EventType.STUDY_BLOCK,
         user: {
           connect: { id: createStudyBlockDto.userId },
         },
@@ -119,7 +119,7 @@ export class EventsService {
         description: updateStudyBlockDto.description,
         start: updateStudyBlockDto.start,
         end: updateStudyBlockDto.end,
-        type: 'STUDY_BLOCK',
+        type: EventType.STUDY_BLOCK,
         user: {
           connect: { id: updateStudyBlockDto.userId },
         },

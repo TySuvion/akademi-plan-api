@@ -14,6 +14,9 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { EventEntity } from './entities/event.entity';
+import { StudyBlockEntity } from './entities/studyblock.entity';
+import { CreateStudyBlockDto } from './dto/create-studyblock.dto';
+import { updateStudyBlockDto } from './dto/update-studyblock.dto';
 
 @Controller('events')
 export class EventsController {
@@ -23,6 +26,14 @@ export class EventsController {
   @ApiCreatedResponse({ type: EventEntity })
   async create(@Body() createEventDto: CreateEventDto) {
     return new EventEntity(await this.eventsService.create(createEventDto));
+  }
+
+  @Post('studyblock')
+  @ApiCreatedResponse({ type: StudyBlockEntity })
+  async createStudyBlock(@Body() createStudyBlockDto: CreateStudyBlockDto) {
+    return new StudyBlockEntity(
+      await this.eventsService.createStudyBlock(createStudyBlockDto),
+    );
   }
 
   @Get()
@@ -76,6 +87,17 @@ export class EventsController {
     @Body() updateEventDto: UpdateEventDto,
   ) {
     return new EventEntity(await this.eventsService.update(id, updateEventDto));
+  }
+
+  @Patch('studyblock/:id')
+  @ApiOkResponse({ type: StudyBlockEntity })
+  async updateStudyBlock(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStudyBlockDto: updateStudyBlockDto,
+  ) {
+    return new StudyBlockEntity(
+      await this.eventsService.updateStudyBlock(id, updateStudyBlockDto),
+    );
   }
 
   @Delete(':id')
