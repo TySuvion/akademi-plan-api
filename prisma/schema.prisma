@@ -33,6 +33,11 @@ model User {
   events Event[] @relation("UserEvents")
 }
 
+enum EventType {
+  CALENDAR_EVENT
+  STUDY_BLOCK
+}
+
 model Event {
   id Int @default(autoincrement()) @id
   userId Int
@@ -43,4 +48,14 @@ model Event {
   end DateTime
   course Course? @relation("CourseEvents",fields: [courseId], references: [id])
   courseId Int?
+  type EventType @default(CALENDAR_EVENT)
+  studyBlock StudyBlock? @relation("StudyBlockEvent")
+}
+
+model StudyBlock {
+  id Int @default(autoincrement()) @id
+  event Event @relation("StudyBlockEvent" , fields: [eventId], references: [id], onDelete: Cascade)
+  eventId Int @unique
+  plannedSessions Int
+  completedSessions Int @default(0) 
 }
