@@ -3,6 +3,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { CreateStudyBlockDto } from './dto/create-studyblock.dto';
+import { updateStudyBlockDto } from './dto/update-studyblock.dto';
 
 @Injectable()
 export class EventsService {
@@ -42,6 +44,10 @@ export class EventsService {
           lt: new Date(new Date(date).setHours(23, 59, 59, 999)),
         },
       },
+      include: {
+        course: true,
+        studyBlock: true,
+      },
     });
   }
 
@@ -75,6 +81,61 @@ export class EventsService {
   remove(id: number) {
     return this.prisma.event.delete({
       where: { id },
+    });
+  }
+
+  async createStudyBlock(createStudyBlockDto: CreateStudyBlockDto) {
+    return this.prisma.event.create({
+      data: {
+        name: createStudyBlockDto.name,
+        description: createStudyBlockDto.description,
+        start: createStudyBlockDto.start,
+        end: createStudyBlockDto.end,
+        type: 'STUDY_BLOCK',
+        user: {
+          connect: { id: createStudyBlockDto.userId },
+        },
+        ...(createStudyBlockDto.courseId && {
+          course: {
+            connect: { id: createStudyBlockDto.courseId },
+          },
+        }),
+        studyBlock: {
+          create: {
+            plannedSessions: createStudyBlockDto.plannedSessions,
+            completedSessions: createStudyBlockDto.completedSessions,
+          },
+        },
+      },
+      include: { studyBlock: true },
+    });
+  }
+
+  async updateStudyBlock(id: number, updateStudyBlockDto: updateStudyBlockDto) {
+    return this.prisma.event.update({
+      where: { id: id },
+      data: {
+        name: updateStudyBlockDto.name,
+        description: updateStudyBlockDto.description,
+        start: updateStudyBlockDto.start,
+        end: updateStudyBlockDto.end,
+        type: 'STUDY_BLOCK',
+        user: {
+          connect: { id: updateStudyBlockDto.userId },
+        },
+        ...(updateStudyBlockDto.courseId && {
+          course: {
+            connect: { id: updateStudyBlockDto.courseId },
+          },
+        }),
+        studyBlock: {
+          update: {
+            plannedSessions: updateStudyBlockDto.plannedSessions,
+            completedSessions: updateStudyBlockDto.completedSessions,
+          },
+        },
+      },
+      include: { studyBlock: true },
     });
   }
 }
