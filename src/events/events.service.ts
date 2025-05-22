@@ -120,9 +120,6 @@ export class EventsService {
         start: updateStudyBlockDto.start,
         end: updateStudyBlockDto.end,
         type: EventType.STUDY_BLOCK,
-        user: {
-          connect: { id: updateStudyBlockDto.userId },
-        },
         ...(updateStudyBlockDto.courseId && {
           course: {
             connect: { id: updateStudyBlockDto.courseId },

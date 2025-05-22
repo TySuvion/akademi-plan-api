@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Event } from '@prisma/client';
+import { $Enums, Event } from '@prisma/client';
 
 export class EventEntity implements Event {
   @ApiProperty()
@@ -16,6 +16,9 @@ export class EventEntity implements Event {
 
   @ApiProperty()
   end: Date;
+
+  @ApiProperty()
+  type: $Enums.EventType;
 
   @ApiProperty()
   userId: number;
