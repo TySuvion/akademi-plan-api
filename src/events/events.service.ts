@@ -67,6 +67,7 @@ export class EventsService {
     return this.prisma.event.update({
       where: { id },
       data: {
+        type: EventType.CALENDAR_EVENT,
         name: updateEventDto.name,
         description: updateEventDto.description,
         start: updateEventDto.start,
@@ -112,8 +113,17 @@ export class EventsService {
   }
 
   async updateStudyBlock(id: number, updateStudyBlockDto: updateStudyBlockDto) {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      include: { studyBlock: true },
+    });
+
+    if (!event) {
+      throw new Error(`Event with ID ${id} not found`);
+    }
+
     return this.prisma.event.update({
-      where: { id: id },
+      where: { id },
       data: {
         name: updateStudyBlockDto.name,
         description: updateStudyBlockDto.description,
@@ -125,12 +135,19 @@ export class EventsService {
             connect: { id: updateStudyBlockDto.courseId },
           },
         }),
-        studyBlock: {
-          update: {
-            plannedSessions: updateStudyBlockDto.plannedSessions,
-            completedSessions: updateStudyBlockDto.completedSessions,
-          },
-        },
+        studyBlock: event.studyBlock
+          ? {
+              update: {
+                plannedSessions: updateStudyBlockDto.plannedSessions ?? 0,
+                completedSessions: updateStudyBlockDto.completedSessions ?? 0,
+              },
+            }
+          : {
+              create: {
+                plannedSessions: updateStudyBlockDto.plannedSessions ?? 0,
+                completedSessions: updateStudyBlockDto.completedSessions ?? 0,
+              },
+            },
       },
       include: { studyBlock: true },
     });
