@@ -21,6 +21,17 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   events Event[] @relation("CourseEvents")
+  weeklyGoals WeeklyGoal[] @relation("WeeklyCourseGoal")
+}
+
+model WeeklyGoal {
+  id Int @default(autoincrement()) @id
+  courseId Int
+  course Course @relation("WeeklyCourseGoal",fields: [courseId], references: [id])
+  weekStart DateTime
+  weekEnd DateTime
+  goalSessios Int
+  completedSessions Int @default(0)
 }
 
 model User {
