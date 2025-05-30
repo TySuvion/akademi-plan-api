@@ -54,9 +54,22 @@ export class CoursesService {
   }
 
   async updateWeeklyGoal(id: number, updateWeeklyGoalDto: UpdateWeeklyGoalDto) {
+    const weeklyGoal = await this.prisma.weeklyGoal.findUnique({
+      where: { id },
+    });
+
+    const completedSessions = await this.getCompletedSessions(
+      weeklyGoal!.courseId,
+      weeklyGoal!.weekStart,
+      weeklyGoal!.weekEnd,
+    );
+
     return this.prisma.weeklyGoal.update({
       where: { id },
-      data: updateWeeklyGoalDto,
+      data: {
+        ...updateWeeklyGoalDto,
+        completedSessions,
+      },
     });
   }
 
@@ -80,14 +93,11 @@ export class CoursesService {
     const currentSundday = new Date(currentMonday);
     currentSundday.setDate(currentMonday.getDate() + 6);
     currentSundday.setHours(23, 59, 59, 999);
-    let sessions = 0;
-    await this.getCompletedSessions(
+    let sessions = await this.getCompletedSessions(
       createWeeklyGoalDto.courseId,
       currentMonday,
       currentSundday,
-    ).then((completedSessions) => {
-      sessions = completedSessions;
-    });
+    );
 
     return this.prisma.weeklyGoal.create({
       data: {
