@@ -14,6 +14,8 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CourseEntity } from './entities/course.entity';
+import { WeeklyGoalEntity } from './entities/weeklygoals.enitity';
+import { CreateWeeklyGoalDto } from './dto/create-weeklygoal.dto';
 
 @Controller('courses')
 @ApiTags('courses')
@@ -24,6 +26,14 @@ export class CoursesController {
   @ApiCreatedResponse({ type: CourseEntity })
   async create(@Body() createCourseDto: CreateCourseDto) {
     return new CourseEntity(await this.coursesService.create(createCourseDto));
+  }
+
+  @Post('weeklygoal')
+  @ApiCreatedResponse({ type: WeeklyGoalEntity })
+  async createGoal(@Body() CreateWeeklyGoalDto: CreateWeeklyGoalDto) {
+    return new WeeklyGoalEntity(
+      await this.coursesService.addWeeklyGoal(CreateWeeklyGoalDto),
+    );
   }
 
   @Get()

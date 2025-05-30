@@ -20,7 +20,9 @@ export class CoursesService {
   }
 
   findAll() {
-    return this.prisma.course.findMany();
+    return this.prisma.course.findMany({
+      include: { events: true, weeklyGoals: true },
+    });
   }
 
   findByUser(userId: number) {
@@ -71,7 +73,7 @@ export class CoursesService {
 
     return this.prisma.weeklyGoal.create({
       data: {
-        courseId: createWeeklyGoalDto.courseId,
+        course: { connect: { id: createWeeklyGoalDto.courseId } },
         weekStart: currentMonday.toISOString(),
         weekEnd: currentSundday.toISOString(),
         goalSessios: createWeeklyGoalDto.goalSessions,
