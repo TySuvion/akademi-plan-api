@@ -25,6 +25,9 @@ export class CoursesService {
   findByUser(userId: number) {
     return this.prisma.course.findMany({
       where: { userID: userId },
+      include: {
+        events: true,
+      },
     });
   }
 
