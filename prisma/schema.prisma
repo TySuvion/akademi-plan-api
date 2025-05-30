@@ -28,9 +28,9 @@ model WeeklyGoal {
   id Int @default(autoincrement()) @id
   courseId Int
   course Course @relation("WeeklyCourseGoal",fields: [courseId], references: [id])
-  weekStart DateTime
-  weekEnd DateTime
-  goalSessios Int
+  weekStart DateTime @unique()
+  weekEnd DateTime @unique()
+  goalSessions Int @default(16)
   completedSessions Int @default(0)
 }
 

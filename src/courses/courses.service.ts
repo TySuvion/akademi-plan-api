@@ -3,6 +3,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWeeklyGoalDto } from './dto/create-weeklygoal.dto';
+import { UpdateWeeklyGoalDto } from './dto/update-weeklygoal.dto';
 
 @Injectable()
 export class CoursesService {
@@ -40,6 +41,7 @@ export class CoursesService {
       where: { id },
       include: {
         user: true,
+        weeklyGoals: true,
       },
     });
   }
@@ -51,19 +53,35 @@ export class CoursesService {
     });
   }
 
+  async updateWeeklyGoal(id: number, updateWeeklyGoalDto: UpdateWeeklyGoalDto) {
+    return this.prisma.weeklyGoal.update({
+      where: { id },
+      data: updateWeeklyGoalDto,
+    });
+  }
+
   remove(id: number) {
     return this.prisma.course.delete({
       where: { id },
     });
   }
 
-  addWeeklyGoal(createWeeklyGoalDto: CreateWeeklyGoalDto) {
+  removeGoal(id: number) {
+    return this.prisma.weeklyGoal.delete({
+      where: { id },
+    });
+  }
+
+  async addWeeklyGoal(createWeeklyGoalDto: CreateWeeklyGoalDto) {
     const today = new Date();
     const currentMonday = new Date(today);
     currentMonday.setDate(today.getDate() - today.getDay() + 1);
-    const currentSundday = new Date(currentMonday + '6 days');
+    currentMonday.setHours(0, 0, 0, 0);
+    const currentSundday = new Date(currentMonday);
+    currentSundday.setDate(currentMonday.getDate() + 6);
+    currentSundday.setHours(23, 59, 59, 999);
     let sessions = 0;
-    this.getCompletedSessions(
+    await this.getCompletedSessions(
       createWeeklyGoalDto.courseId,
       currentMonday,
       currentSundday,
@@ -74,9 +92,9 @@ export class CoursesService {
     return this.prisma.weeklyGoal.create({
       data: {
         course: { connect: { id: createWeeklyGoalDto.courseId } },
-        weekStart: currentMonday.toISOString(),
-        weekEnd: currentSundday.toISOString(),
-        goalSessios: createWeeklyGoalDto.goalSessions,
+        weekStart: currentMonday,
+        weekEnd: currentSundday,
+        goalSessions: createWeeklyGoalDto.goalSessions,
         completedSessions: sessions,
       },
     });

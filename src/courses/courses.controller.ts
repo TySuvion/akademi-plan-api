@@ -16,6 +16,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CourseEntity } from './entities/course.entity';
 import { WeeklyGoalEntity } from './entities/weeklygoals.enitity';
 import { CreateWeeklyGoalDto } from './dto/create-weeklygoal.dto';
+import { UpdateWeeklyGoalDto } from './dto/update-weeklygoal.dto';
 
 @Controller('courses')
 @ApiTags('courses')
@@ -30,9 +31,9 @@ export class CoursesController {
 
   @Post('weeklygoal')
   @ApiCreatedResponse({ type: WeeklyGoalEntity })
-  async createGoal(@Body() CreateWeeklyGoalDto: CreateWeeklyGoalDto) {
+  async createGoal(@Body() createWeeklyGoalDto: CreateWeeklyGoalDto) {
     return new WeeklyGoalEntity(
-      await this.coursesService.addWeeklyGoal(CreateWeeklyGoalDto),
+      await this.coursesService.addWeeklyGoal(createWeeklyGoalDto),
     );
   }
 
@@ -74,9 +75,26 @@ export class CoursesController {
     );
   }
 
+  @Patch('weeklygoal/:id')
+  @ApiOkResponse({ type: WeeklyGoalEntity })
+  async updateGoal(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateWeeklyGoalDto: UpdateWeeklyGoalDto,
+  ) {
+    return new WeeklyGoalEntity(
+      await this.coursesService.updateWeeklyGoal(id, updateWeeklyGoalDto),
+    );
+  }
+
   @Delete(':id')
   @ApiOkResponse({ type: CourseEntity })
   async remove(@Param('id', ParseIntPipe) id: number) {
     return new CourseEntity(await this.coursesService.remove(id));
+  }
+
+  @Delete('weeklygoal/:id')
+  @ApiOkResponse({ type: WeeklyGoalEntity })
+  async removeGoal(@Param('id', ParseIntPipe) id: number) {
+    return new WeeklyGoalEntity(await this.coursesService.removeGoal(id));
   }
 }

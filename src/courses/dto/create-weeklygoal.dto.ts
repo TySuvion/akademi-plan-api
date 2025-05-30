@@ -11,4 +11,8 @@ export class CreateWeeklyGoalDto {
   @IsNotEmpty()
   @IsInt()
   goalSessions: number;
+
+  @ApiProperty()
+  @IsInt()
+  completedSessions: number;
 }

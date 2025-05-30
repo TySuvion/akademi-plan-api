@@ -15,7 +15,7 @@ export class WeeklyGoalEntity implements WeeklyGoal {
   weekEnd: Date;
 
   @ApiProperty()
-  goalSessios: number;
+  goalSessions: number;
 
   @ApiProperty()
   completedSessions: number;
