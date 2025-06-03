@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString, Max, MaxLength } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Max,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateCourseDto {
   @ApiProperty()
@@ -11,4 +18,8 @@ export class CreateCourseDto {
   @IsInt()
   @IsNotEmpty()
   userId: number;
+
+  @ApiProperty({ required: false, nullable: true })
+  @IsInt()
+  sessionGoal?: number;
 }

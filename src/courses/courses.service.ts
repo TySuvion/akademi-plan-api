@@ -9,8 +9,8 @@ import { UpdateWeeklyGoalDto } from './dto/update-weeklygoal.dto';
 export class CoursesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createCourseDto: CreateCourseDto) {
-    return this.prisma.course.create({
+  async create(createCourseDto: CreateCourseDto) {
+    const course = await this.prisma.course.create({
       data: {
         name: createCourseDto.name,
         user: {
@@ -18,6 +18,15 @@ export class CoursesService {
         },
       },
     });
+    if (createCourseDto.sessionGoal && createCourseDto.sessionGoal > 0) {
+      await this.addWeeklyGoal({
+        courseId: course.id,
+        goalSessions: createCourseDto.sessionGoal,
+        completedSessions: 0,
+      });
+    }
+
+    return course;
   }
 
   findAll() {
@@ -46,11 +55,34 @@ export class CoursesService {
     });
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return this.prisma.course.update({
+  async update(id: number, updateCourseDto: UpdateCourseDto) {
+    const course = await this.prisma.course.update({
       where: { id },
-      data: updateCourseDto,
+      data: {
+        ...updateCourseDto,
+      },
     });
+
+    if (updateCourseDto.sessionGoal && updateCourseDto.sessionGoal > 0) {
+      const today = new Date();
+      const currentMonday = new Date(today);
+      currentMonday.setDate(today.getDate() - today.getDay() + 1);
+      const existingGoal = await this.prisma.weeklyGoal.findFirst({
+        where: { courseId: id, weekStart: currentMonday },
+      });
+      if (existingGoal) {
+        await this.updateWeeklyGoal(existingGoal.id, {
+          goalSessions: updateCourseDto.sessionGoal,
+        });
+      } else {
+        await this.addWeeklyGoal({
+          courseId: id,
+          goalSessions: updateCourseDto.sessionGoal,
+          completedSessions: 0,
+        });
+      }
+    }
+    return course;
   }
 
   async updateWeeklyGoal(id: number, updateWeeklyGoalDto: UpdateWeeklyGoalDto) {
