@@ -70,6 +70,17 @@ export class EventsController {
     return events.map((event) => new EventEntity(event));
   }
 
+  @Get('/untilToday/:userId')
+  @ApiOkResponse({ type: EventEntity, isArray: true })
+  async findAllUntilToday(@Param('userId', ParseIntPipe) userId: number) {
+    const events = await this.eventsService.findAllUntilToday(userId);
+    if (!events || events.length === 0) {
+      throw new NotFoundException(
+        `No events found for user ${userId} until today`,
+      );
+    }
+    return events.map((event) => new EventEntity(event));
+  }
   @Get(':id')
   @ApiOkResponse({ type: EventEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {

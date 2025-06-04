@@ -35,6 +35,26 @@ export class EventsService {
     });
   }
 
+  findAllUntilToday(userId?: number) {
+    const today = new Date();
+    return this.prisma.event.findMany({
+      where: {
+        type: EventType.STUDY_BLOCK,
+        start: {
+          lte: today,
+        },
+        ...(userId && { userId }),
+      },
+      include: {
+        course: true,
+        studyBlock: true,
+      },
+      orderBy: {
+        start: 'asc',
+      },
+    });
+  }
+
   async findEventsForDateByUser(userID: number, date: string) {
     return this.prisma.event.findMany({
       where: {
