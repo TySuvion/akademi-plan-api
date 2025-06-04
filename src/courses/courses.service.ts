@@ -59,7 +59,7 @@ export class CoursesService {
     const course = await this.prisma.course.update({
       where: { id },
       data: {
-        ...updateCourseDto,
+        name: updateCourseDto.name,
       },
     });
 
@@ -67,6 +67,7 @@ export class CoursesService {
       const today = new Date();
       const currentMonday = new Date(today);
       currentMonday.setDate(today.getDate() - today.getDay() + 1);
+      currentMonday.setHours(0, 0, 0, 0);
       const existingGoal = await this.prisma.weeklyGoal.findFirst({
         where: { courseId: id, weekStart: currentMonday },
       });
