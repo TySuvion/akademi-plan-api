@@ -4,7 +4,7 @@ This is the backend API for the AkademiPlan project. Below you'll find instructi
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js
 - A running PostgreSQL Database
 - npm or yarn
 
@@ -23,24 +23,20 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database connection
-DATABASE_URL="postgresql://username:password@localhost:5432/akademiplan"
+DATABASE_URL="postgresql://[username]:[password]@[url]:[port]/[database-name]?schema=public"
 
 # JWT Authentication
 JWT_SECRET="your-secret-key"
-JWT_EXPIRES_IN="24h"
 
-# Server
-PORT=3000
-NODE_ENV="development"
+# Corse Filter Expemtion Address for Angular FrontEnd (example for angular app running on localhost)
+CORS_ORIGIN = "http://localhost:4200"
 ```
 
 ### Environment Variables Explanation
 
 - `DATABASE_URL`: Your PostgreSQL connection string
 - `JWT_SECRET`: Secret key for JWT token generation
-- `JWT_EXPIRES_IN`: Token expiration time
-- `PORT`: Server port number
-- `NODE_ENV`: Application environment
+- `CORS_ORIGIN`: the url of the FrontEnd to skip the CORS filter
 
 ## Database Setup
 
@@ -67,7 +63,7 @@ npm run dev
 
 ```bash
 npm run build
-npm start
+npm run start
 ```
 
 ## API Documentation
@@ -76,14 +72,11 @@ The API documentation is available at `/api` when the server is running.
 
 ## Scripts
 
-- `npm run dev` - Start development server
+- `npm run start:dev` - Start development server
 - `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run prisma:generate` - Generate Prisma Client
-- `npm run prisma:migrate` - Run database migrations
+- `npm run start` - Start production server
 
 ## Prisma Commands
 
 - Generate new migration: `npx prisma migrate dev --name migration_name`
 - Reset database: `npx prisma migrate reset`
-- View database: `npx prisma studio`
