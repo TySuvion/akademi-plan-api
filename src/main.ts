@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,9 +19,12 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
+  const configService = app.get(ConfigService);
+
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
-  // This filter will catch all PrismaClientKnownRequestError exceptions and return a custom response
+
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
   // This interceptor will serialize the response using the class-transformer library
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   //whitelist: true means all properties that are not marked with validation decorators will be removed from the object
@@ -28,7 +32,7 @@ async function bootstrap() {
   app.useGlobalFilters();
 
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: configService.get<string>('CORS_ORIGIN'),
     credentials: true,
   });
 
