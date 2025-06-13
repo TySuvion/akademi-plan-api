@@ -11,8 +11,8 @@ export const roundsOfHashing = 10;
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(
+  create(createUserDto: CreateUserDto) {
+    const hashedPassword = bcrypt.hashSync(
       createUserDto.password,
       roundsOfHashing,
     );
@@ -32,9 +32,9 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: userUniqueInput });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(
+      updateUserDto.password = bcrypt.hashSync(
         updateUserDto.password,
         roundsOfHashing,
       );
