@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class AuthService {
       throw new NotFoundException(`No user found with username ${username}`);
     }
 
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    const isPasswordValid = await compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(`Invalid password for user ${username}`);

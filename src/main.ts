@@ -31,11 +31,13 @@ async function bootstrap() {
 
   app.useGlobalFilters();
 
-  app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN'),
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: configService.get<string>('CORS_ORIGIN'),
+  //   credentials: true,
+  // });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3001);
+
+  
 }
 bootstrap();
