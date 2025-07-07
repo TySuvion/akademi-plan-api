@@ -25,19 +25,16 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  // This interceptor will serialize the response using the class-transformer library
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   //whitelist: true means all properties that are not marked with validation decorators will be removed from the object
 
   app.useGlobalFilters();
 
-  // app.enableCors({
-  //   origin: configService.get<string>('CORS_ORIGIN'),
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN'),
+    credentials: true,
+  });
 
   await app.listen(process.env.PORT ?? 3001);
-
-  
 }
 bootstrap();
